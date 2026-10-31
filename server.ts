@@ -359,6 +359,17 @@ Return JSON with:
   }
 });
 
+// 4. Download endpoints for pitch deck PDF & PPTX
+app.get('/download/pdf', (_req: Request, res: Response) => {
+  const filePath = path.resolve('public/GapLens_Hackathon_Pitch_Deck.pdf');
+  res.download(filePath, 'GapLens_Hackathon_Pitch_Deck.pdf');
+});
+
+app.get('/download/pptx', (_req: Request, res: Response) => {
+  const filePath = path.resolve('public/GapLens_Hackathon_Pitch_Deck.pptx');
+  res.download(filePath, 'GapLens_Hackathon_Pitch_Deck.pptx');
+});
+
 // Production vs Development static and vite middlewares
 async function startServer() {
   const isProduction = process.env.NODE_ENV === 'production';

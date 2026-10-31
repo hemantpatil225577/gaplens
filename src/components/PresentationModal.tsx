@@ -98,6 +98,17 @@ ${s.speakerNotes}
     setTimeout(() => setCopiedAllMarkdown(false), 2000);
   };
 
+  const handleDownloadPdf = () => {
+    const a = document.createElement('a');
+    a.href = '/download/pdf';
+    a.download = 'GapLens_Hackathon_Pitch_Deck.pdf';
+    a.click();
+  };
+
+  const handleOpenPdf = () => {
+    window.open('/GapLens_Hackathon_Pitch_Deck.pdf', '_blank');
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-md">
       <div className="relative w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col max-h-[95vh] overflow-hidden text-slate-100">
@@ -117,7 +128,7 @@ ${s.speakerNotes}
                 </span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">
-                Tailored for Hackathon Pitch & Epistemic AI Rubrics
+                Tailored for Hackathon Pitch & Epistemic AI Rubrics (16:9 Widescreen)
               </p>
             </div>
           </div>
@@ -134,26 +145,38 @@ ${s.speakerNotes}
               title="Toggle Speaker Notes"
             >
               <Mic className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Speaker Notes</span>
+              <span className="hidden lg:inline">Speaker Notes</span>
             </button>
 
             <button
               onClick={handleCopyAllMarkdown}
               className="px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors flex items-center gap-1.5 border border-slate-700"
-              title="Copy entire slide deck as Markdown to paste into Google Slides or Notion"
+              title="Copy entire slide deck as Markdown"
             >
               {copiedAllMarkdown ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline">{copiedAllMarkdown ? 'Copied MD' : 'Copy All MD'}</span>
+              <span className="hidden sm:inline">{copiedAllMarkdown ? 'Copied MD' : 'Copy MD'}</span>
             </button>
 
+            {/* Direct Download PDF Button */}
+            <button
+              onClick={handleDownloadPdf}
+              className="px-3 py-1.5 text-xs font-semibold text-rose-100 bg-rose-600/90 hover:bg-rose-500 rounded-lg transition-all shadow-md shadow-rose-900/30 flex items-center gap-1.5 border border-rose-500/50"
+              title="Download high-resolution 16:9 PDF presentation"
+            >
+              <Download className="w-3.5 h-3.5 text-white" />
+              <span>Download PDF</span>
+            </button>
+
+            {/* Direct Download PPTX Button */}
             <button
               onClick={handleDownloadPptx}
               disabled={isGeneratingPptx}
-              className="px-3.5 py-1.5 text-xs font-semibold text-white bg-sky-600 hover:bg-sky-500 rounded-lg transition-all shadow-md shadow-sky-600/30 flex items-center gap-2 disabled:opacity-50"
-              title="Download real Microsoft PowerPoint (.pptx) presentation"
+              className="px-3 py-1.5 text-xs font-semibold text-white bg-sky-600 hover:bg-sky-500 rounded-lg transition-all shadow-md shadow-sky-600/30 flex items-center gap-1.5 disabled:opacity-50"
+              title="Download Microsoft PowerPoint (.pptx) presentation"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>{isGeneratingPptx ? 'Building PPTX...' : 'Download .pptx'}</span>
+              <span className="hidden sm:inline">{isGeneratingPptx ? 'Building PPTX...' : 'Download .pptx'}</span>
+              <span className="sm:hidden">.pptx</span>
             </button>
 
             <button
@@ -309,7 +332,7 @@ ${s.speakerNotes}
         <div className="p-3 bg-slate-950 border-t border-slate-800 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Direct .pptx export generates widescreen 16:9 slides with full speaker notes included.</span>
+            <span>Direct .pdf & .pptx exports generate widescreen 16:9 presentation slides with full speaker notes included.</span>
           </div>
           <div className="flex items-center gap-3">
             <span className="text-slate-500">Keyboard shortcuts: ← / → / Space</span>
