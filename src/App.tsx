@@ -28,6 +28,7 @@ import { SourceInspectorModal } from './components/SourceInspectorModal';
 import { AddSourceModal } from './components/AddSourceModal';
 import { BenchmarkSelectorModal } from './components/BenchmarkSelectorModal';
 import { JudgeGuideModal } from './components/JudgeGuideModal';
+import { PresentationModal } from './components/PresentationModal';
 import { ExportModal } from './components/ExportModal';
 import { VoidGraphVisualizer } from './components/VoidGraphVisualizer';
 import { DecisionStressTester } from './components/DecisionStressTester';
@@ -89,6 +90,7 @@ export default function App() {
   const [activeInspectorSourceId, setActiveInspectorSourceId] = useState<string | null>(null);
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
   const [showJudgeGuideModal, setShowJudgeGuideModal] = useState<boolean>(false);
+  const [showPresentationModal, setShowPresentationModal] = useState<boolean>(false);
   const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false);
 
   // Run Dark Spot Audit
@@ -215,6 +217,7 @@ export default function App() {
         toggleDark={toggleDark}
         onOpenBenchmarks={() => setShowBenchmarksModal(true)}
         onOpenGuide={() => setShowJudgeGuideModal(true)}
+        onOpenPresentation={() => setShowPresentationModal(true)}
         onOpenCommandPalette={() => setShowCommandPalette(true)}
         onRunAnalysis={handleRunAnalysis}
         isAnalyzing={isAnalyzing}
@@ -560,6 +563,12 @@ export default function App() {
         />
       )}
 
+      {showPresentationModal && (
+        <PresentationModal
+          onClose={() => setShowPresentationModal(false)}
+        />
+      )}
+
       {showCommandPalette && (
         <CommandPalette
           isOpen={showCommandPalette}
@@ -570,6 +579,7 @@ export default function App() {
           onSelectScenario={handleSelectScenario}
           onRunAnalysis={handleRunAnalysis}
           onInspectSource={handleInspectSource}
+          onOpenPresentation={() => setShowPresentationModal(true)}
         />
       )}
     </div>

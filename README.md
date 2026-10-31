@@ -144,6 +144,14 @@ npm run build
 npm start
 ```
 
+### 6. Generate Pitch Presentation Deck (.pptx)
+Generate the complete 8-slide Hackathon pitch deck with embedded speaker notes:
+```bash
+npm run generate:ppt
+# Outputs: GapLens_Hackathon_Pitch_Deck.pptx
+```
+Or click the **Pitch PPT** button in the web app navigation bar to preview slides interactively and download the `.pptx` directly in the browser!
+
 ---
 
 ## 🧪 Demonstration & Benchmark Scenarios

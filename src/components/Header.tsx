@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sun, Moon, Sparkles, Database, RefreshCw, Trophy, Search } from 'lucide-react';
+import { Sun, Moon, Sparkles, Database, RefreshCw, Trophy, Search, Presentation } from 'lucide-react';
 import { Logo } from './Logo';
 
 interface HeaderProps {
@@ -9,6 +9,7 @@ interface HeaderProps {
   toggleDark: () => void;
   onOpenBenchmarks: () => void;
   onOpenGuide: () => void;
+  onOpenPresentation: () => void;
   onOpenCommandPalette: () => void;
   onRunAnalysis: () => void;
   isAnalyzing: boolean;
@@ -21,6 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   toggleDark,
   onOpenBenchmarks,
   onOpenGuide,
+  onOpenPresentation,
   onOpenCommandPalette,
   onRunAnalysis,
   isAnalyzing,
@@ -125,6 +127,15 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Search className="w-3.5 h-3.5 text-sky-500" />
               <span className="font-mono text-[11px] text-sky-600 dark:text-sky-400 font-semibold">⌘K</span>
+            </button>
+
+            <button
+              onClick={onOpenPresentation}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-sky-900 dark:text-sky-200 bg-sky-100/80 hover:bg-sky-200/80 dark:bg-sky-900/40 dark:hover:bg-sky-800/60 border border-sky-300/80 dark:border-sky-700/80 rounded-lg transition-colors whitespace-nowrap shrink-0 shadow-xs"
+              title="View Hackathon Pitch Deck & Download PPT"
+            >
+              <Presentation className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+              <span>Pitch PPT</span>
             </button>
 
             <button
