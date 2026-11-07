@@ -2,6 +2,7 @@ import React from 'react';
 import { Sparkles, ShieldAlert, BookOpen, ArrowRight, Compass, CheckCircle2 } from 'lucide-react';
 import { BENCHMARK_SCENARIOS } from '../data/benchmarks';
 import { BenchmarkScenario } from '../types';
+import heroDarkspotRadar from '../assets/images/hero_darkspot_radar_1793429165165.jpg';
 
 interface HeroBannerProps {
   onSelectScenario: (scenario: BenchmarkScenario) => void;
@@ -92,10 +93,12 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
           <div className="relative w-full max-w-sm rounded-2xl overflow-hidden bg-white dark:bg-slate-900 border border-sky-200/80 dark:border-slate-800 shadow-xl shadow-sky-500/10">
             <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-slate-950">
               <img
-                src="/src/assets/images/hero_darkspot_radar_1793429165165.jpg"
+                src={heroDarkspotRadar}
                 alt="Information Dark Spot Radar"
                 className="w-full h-full object-cover object-center"
-                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.src = '/assets/images/hero_darkspot_radar_1793429165165.jpg';
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
               <div className="absolute top-3 left-3 px-2 py-0.5 rounded-md bg-sky-500/90 text-white text-[10px] font-mono font-bold uppercase tracking-wider backdrop-blur-xs">

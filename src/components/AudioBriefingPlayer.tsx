@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { AnalysisResult } from '../types';
+import avatarAuditor from '../assets/images/avatar_auditor_lead_1793429163841.jpg';
 
 interface AudioBriefingPlayerProps {
   analysis: AnalysisResult;
@@ -76,10 +77,12 @@ export const AudioBriefingPlayer: React.FC<AudioBriefingPlayerProps> = ({
         {/* Auditor Avatar */}
         <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-sky-200 dark:border-slate-700 shadow-xs">
           <img
-            src="/src/assets/images/avatar_auditor_lead_1793429163841.jpg"
+            src={avatarAuditor}
             alt="Intelligence Auditor"
             className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
+            onError={(e) => {
+              e.currentTarget.src = '/assets/images/avatar_auditor_lead_1793429163841.jpg';
+            }}
           />
           {isPlaying && (
             <div className="absolute inset-0 bg-sky-500/20 flex items-center justify-center">
