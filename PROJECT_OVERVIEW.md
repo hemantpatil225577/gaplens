@@ -76,9 +76,8 @@ GapLens delivers an end-to-end audit pipeline organized into eight dedicated mod
   6. *Post-Event Liabilities*
 - **Interactive Force-Directed Source Network:** A visual topological graph rendering the web of ingested sources linked to discovered gaps and contradictions, revealing which source is the primary origin of conflicting claims.
 
-### 2.8 Executive Audio Briefing, Presentation Suite & Dossier Exporter
+### 2.8 Executive Audio Briefing & Dossier Exporter
 - **Audio Executive Summary:** A built-in voice synthesizer (using the Web Speech API) delivers a spoken debrief of high-risk findings for rapid review.
-- **Hackathon Pitch Deck Generator (.pptx):** An interactive 16:9 presentation viewer and automated `.pptx` generator that builds an 8-slide presentation deck complete with speaker notes.
 - **Audit Dossier Exporter:** One-click export to comprehensive Markdown or JSON reports with timestamps, checksums, and citation trails for legal, academic, or administrative archival.
 
 ---
@@ -139,7 +138,6 @@ GapLens delivers an end-to-end audit pipeline organized into eight dedicated mod
 - **Styling & Design System:** Tailwind CSS v4 featuring an "Ocean Clarity" aesthetic (clean white canvases, slate typography, and sky/cyan precision accents).
 - **Icons & Motion:** Lucide React vector icons with subtle Framer Motion / CSS micro-animations.
 - **Data Visualization:** Handcrafted SVG Polar Radar chart and dynamic canvas-free network topology graph.
-- **Slide Deck Generation:** `pptxgenjs` for client-side and server-side PowerPoint generation.
 - **Audio Synthesis:** Web Audio / SpeechSynthesis API for browser-native spoken executive briefings.
 
 ### 4.2 Backend & API Layer

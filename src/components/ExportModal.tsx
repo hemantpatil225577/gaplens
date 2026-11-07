@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { AnalysisResult, SourceItem } from '../types';
-import { X, Download, Copy, Check, FileCode, FileText, Presentation } from 'lucide-react';
-import { downloadPitchDeckPptx } from '../utils/generatePptx';
+import { X, Download, Copy, Check, FileCode, FileText } from 'lucide-react';
 
 interface ExportModalProps {
   analysis: AnalysisResult;
@@ -174,14 +173,6 @@ ${sources
             Audit report contains all {analysis.darkSpots.length} dark spots, {analysis.conflictingClaims.length} conflicts, and verification checklist.
           </span>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => downloadPitchDeckPptx()}
-              className="px-3 py-1.5 text-xs font-semibold text-sky-800 dark:text-sky-300 bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/50 dark:hover:bg-sky-900/60 border border-sky-300 dark:border-sky-800 rounded-lg flex items-center gap-1.5"
-              title="Download Hackathon Pitch Presentation Deck (.pptx)"
-            >
-              <Presentation className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
-              <span>Pitch PPTX</span>
-            </button>
             <button
               onClick={handleCopy}
               className="px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 rounded-lg flex items-center gap-1.5"

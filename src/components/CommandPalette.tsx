@@ -12,7 +12,6 @@ interface CommandPaletteProps {
   onSelectScenario: (scen: BenchmarkScenario) => void;
   onRunAnalysis: () => void;
   onInspectSource: (sourceId: string) => void;
-  onOpenPresentation?: () => void;
 }
 
 export const CommandPalette: React.FC<CommandPaletteProps> = ({
@@ -24,7 +23,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onSelectScenario,
   onRunAnalysis,
   onInspectSource,
-  onOpenPresentation,
 }) => {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -141,21 +139,6 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                 <span className="font-mono text-[10px] text-slate-400">Tab</span>
               </button>
 
-              {onOpenPresentation && (
-                <button
-                  onClick={() => {
-                    onOpenPresentation();
-                    onClose();
-                  }}
-                  className="w-full px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-left flex items-center justify-between text-slate-700 dark:text-slate-200"
-                >
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-sky-500" />
-                    <span>Open Pitch Deck & Download PPT (.pptx)</span>
-                  </div>
-                  <span className="font-mono text-[10px] text-sky-500">Presentation</span>
-                </button>
-              )}
             </div>
           )}
 

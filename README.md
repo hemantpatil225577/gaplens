@@ -144,22 +144,6 @@ npm run build
 npm start
 ```
 
-### 6. Generate Pitch Presentation Deck (.pdf & .pptx)
-Generate the complete 8-slide Hackathon pitch deck in high-resolution 16:9 PDF and PowerPoint formats:
-```bash
-# Generate high-resolution PDF presentation deck (16:9)
-npm run generate:pdf
-# Outputs: GapLens_Hackathon_Pitch_Deck.pdf
-
-# Generate PowerPoint presentation (.pptx)
-npm run generate:ppt
-# Outputs: GapLens_Hackathon_Pitch_Deck.pptx
-
-# Or generate both at once:
-npm run generate:all
-```
-Or click the **Pitch PPT** button in the web app navigation bar to preview slides interactively and download either `.pdf` or `.pptx` directly in the browser!
-
 ---
 
 ## 🧪 Demonstration & Benchmark Scenarios
