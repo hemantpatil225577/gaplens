@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { SourceItem } from '../types';
-import { X, Globe, FileText, Loader2, Link2, Plus, UploadCloud, Sparkles, HelpCircle } from 'lucide-react';
+import { X, Globe, FileText, Loader2, Link2, Plus, UploadCloud, Sparkles, HelpCircle, AlertCircle } from 'lucide-react';
 
 interface AddSourceModalProps {
   onAddSource: (source: SourceItem) => void;
@@ -232,8 +232,24 @@ export const AddSourceModal: React.FC<AddSourceModalProps> = ({
                 </div>
 
                 {fetchError && (
-                  <div className="p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 rounded-lg text-xs text-rose-700 dark:text-rose-300">
-                    {fetchError}
+                  <div className="p-3.5 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-xl text-xs text-rose-700 dark:text-rose-300 space-y-2.5">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                      <div className="space-y-1">
+                        <p className="font-semibold text-rose-800 dark:text-rose-200">{fetchError}</p>
+                        <p className="text-[11px] text-rose-600/90 dark:text-rose-400/90">
+                          Tip: Some government and anti-bot protected portals restrict automated backend scrapers. You can copy the article text and paste it directly!
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setTab('manual')}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-slate-800 text-rose-700 dark:text-rose-200 border border-rose-300 dark:border-rose-800 rounded-lg font-semibold hover:bg-rose-100/50 transition-colors shadow-2xs cursor-pointer text-xs"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      Switch to "Paste Text" tab
+                    </button>
                   </div>
                 )}
               </form>

@@ -35,7 +35,7 @@ interface SourceItem {
   content: string;
 }
 
-// 1. URL Fetch Proxy Endpoint for retrieving source text
+// 1. URL Fetch Proxy Endpoint for retrieving source text with multi-strategy fallback
 app.post('/api/fetch-url', async (req: Request, res: Response) => {
   try {
     const { url } = req.body;
@@ -43,50 +43,131 @@ app.post('/api/fetch-url', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Valid URL is required' });
     }
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 9000);
-
-    const response = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 DigitalDarkSpot/1.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-      },
-    });
-    clearTimeout(timeout);
-
-    if (!response.ok) {
-      return res.status(400).json({ error: `Failed to fetch URL: HTTP ${response.status} ${response.statusText}` });
+    let parsedUrl: URL;
+    try {
+      parsedUrl = new URL(url);
+    } catch {
+      return res.status(400).json({ error: 'Invalid URL format. Please include https://' });
     }
 
-    const html = await response.text();
+    let html = '';
+    let isMarkdown = false;
+    let fallbackUsed = false;
 
-    // Extract title
-    const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-    const title = titleMatch ? titleMatch[1].replace(/\s+/g, ' ').trim() : new URL(url).hostname;
+    // Strategy 1: Direct fetch with standard modern browser headers
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
 
-    // Extract date meta tags if available
-    const dateMetaMatch = html.match(/<meta[^>]+(?:name|property)=["'](?:article:published_time|date|publishdate|pubdate|DC.date.issued)["'][^>]+content=["']([^"']+)["']/i)
-      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:name|property)=["'](?:article:published_time|date|publishdate|pubdate|DC.date.issued)["']/i);
-    const dateOrCycle = dateMetaMatch ? dateMetaMatch[1].slice(0, 10) : '';
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          Accept:
+            'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Upgrade-Insecure-Requests': '1',
+        },
+      });
+      clearTimeout(timeout);
 
-    // Strip script, style, nav, footer, header tags
-    let cleanText = html
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
-      .replace(/<nav\b[^<]*(?:(?!<\/nav>)<[^<]*)*<\/nav>/gi, ' ')
-      .replace(/<footer\b[^<]*(?:(?!<\/footer>)<[^<]*)*<\/footer>/gi, ' ')
-      .replace(/<header\b[^<]*(?:(?!<\/header>)<[^<]*)*<\/header>/gi, ' ')
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/\s+/g, ' ')
-      .trim();
+      if (response.ok) {
+        html = await response.text();
+      } else {
+        console.warn(`Direct fetch for ${url} returned HTTP ${response.status}, attempting proxy reader fallback...`);
+      }
+    } catch (directErr: any) {
+      console.warn(`Direct fetch error for ${url}: ${directErr.message}, attempting proxy reader fallback...`);
+    }
 
-    // Cap text to reasonable token size
+    // Strategy 2: If direct fetch was blocked (e.g. 403 Forbidden on government sites / Cloudflare / Akamai), try reader proxy
+    if (!html || html.length < 50) {
+      try {
+        const jinaController = new AbortController();
+        const jinaTimeout = setTimeout(() => jinaController.abort(), 9000);
+        const jinaRes = await fetch(`https://r.jina.ai/${url}`, {
+          signal: jinaController.signal,
+          headers: {
+            'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          },
+        });
+        clearTimeout(jinaTimeout);
+
+        if (jinaRes.ok) {
+          const jinaText = await jinaRes.text();
+          if (jinaText && jinaText.length > 50) {
+            html = jinaText;
+            isMarkdown = true;
+            fallbackUsed = true;
+          }
+        }
+      } catch (fallbackErr: any) {
+        console.warn('Reader proxy fallback failed:', fallbackErr.message);
+      }
+    }
+
+    if (!html) {
+      return res.status(403).json({
+        error:
+          'This website (e.g. government portal or Cloudflare WAF) blocks external automated scrapers. Please switch to the "Paste Text" tab above to paste the article content directly!',
+      });
+    }
+
+    let title = parsedUrl.hostname;
+    let dateOrCycle = '';
+    let cleanText = '';
+
+    if (isMarkdown) {
+      // Parse Jina Markdown response
+      const titleMatch = html.match(/^Title:\s*(.+)$/m);
+      if (titleMatch && titleMatch[1]) {
+        title = titleMatch[1].trim();
+      }
+
+      const dateMatch = html.match(/Published Time:\s*([^\n\r]+)/i);
+      if (dateMatch && dateMatch[1]) {
+        dateOrCycle = dateMatch[1].slice(0, 16).trim();
+      }
+
+      cleanText = html
+        .replace(/^Title:[\s\S]*?Markdown Content:\s*/i, '')
+        .trim();
+    } else {
+      // HTML parsing
+      const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+      if (titleMatch) {
+        title = titleMatch[1].replace(/\s+/g, ' ').trim();
+      }
+
+      const dateMetaMatch =
+        html.match(
+          /<meta[^>]+(?:name|property)=["'](?:article:published_time|date|publishdate|pubdate|DC.date.issued)["'][^>]+content=["']([^"']+)["']/i
+        ) ||
+        html.match(
+          /<meta[^>]+content=["']([^"']+)["'][^>]+(?:name|property)=["'](?:article:published_time|date|publishdate|pubdate|DC.date.issued)["']/i
+        );
+      if (dateMetaMatch) {
+        dateOrCycle = dateMetaMatch[1].slice(0, 10);
+      }
+
+      cleanText = html
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ')
+        .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ')
+        .replace(/<nav\b[^<]*(?:(?!<\/nav>)<[^<]*)*<\/nav>/gi, ' ')
+        .replace(/<footer\b[^<]*(?:(?!<\/footer>)<[^<]*)*<\/footer>/gi, ' ')
+        .replace(/<header\b[^<]*(?:(?!<\/header>)<[^<]*)*<\/header>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
     if (cleanText.length > 15000) {
       cleanText = cleanText.slice(0, 15000) + '... [Content truncated for analysis]';
     }
@@ -94,13 +175,17 @@ app.post('/api/fetch-url', async (req: Request, res: Response) => {
     return res.json({
       title,
       url,
-      dateOrCycle,
+      dateOrCycle: dateOrCycle || undefined,
       content: cleanText,
+      fallbackUsed,
     });
   } catch (err: any) {
     console.error('Fetch URL error:', err);
     return res.status(500).json({
-      error: err.name === 'AbortError' ? 'URL request timed out after 9 seconds' : (err.message || 'Failed to fetch content from URL'),
+      error:
+        err.name === 'AbortError'
+          ? 'URL request timed out after 9 seconds. Please try again or paste text manually.'
+          : err.message || 'Failed to fetch content from URL',
     });
   }
 });
