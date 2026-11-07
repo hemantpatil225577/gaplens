@@ -6,7 +6,6 @@ import { BenchmarkScenario } from '../types';
 interface HeroBannerProps {
   onSelectScenario: (scenario: BenchmarkScenario) => void;
   currentScenarioId: string;
-  onOpenGuide: () => void;
   onRunAnalysis: () => void;
   isAnalyzing: boolean;
 }
@@ -14,7 +13,6 @@ interface HeroBannerProps {
 export const HeroBanner: React.FC<HeroBannerProps> = ({
   onSelectScenario,
   currentScenarioId,
-  onOpenGuide,
   onRunAnalysis,
   isAnalyzing,
 }) => {
@@ -68,7 +66,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             </div>
           </div>
 
-          {/* Preset Buttons & Guide Button */}
+          {/* Preset Buttons */}
           <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-sky-100 dark:border-slate-800">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Presets:</span>
@@ -86,14 +84,6 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                 </button>
               ))}
             </div>
-
-            <button
-              onClick={onOpenGuide}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-sky-50 hover:bg-sky-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-slate-700 transition-colors"
-            >
-              <Compass className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
-              Demo Flow
-            </button>
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sun, Moon, Sparkles, Database, RefreshCw, Trophy, Search } from 'lucide-react';
+import { Sun, Moon, Sparkles, Database, RefreshCw, Search } from 'lucide-react';
 import { Logo } from './Logo';
 
 interface HeaderProps {
@@ -8,7 +8,6 @@ interface HeaderProps {
   isDark: boolean;
   toggleDark: () => void;
   onOpenBenchmarks: () => void;
-  onOpenGuide: () => void;
   onOpenCommandPalette: () => void;
   onRunAnalysis: () => void;
   isAnalyzing: boolean;
@@ -20,7 +19,6 @@ export const Header: React.FC<HeaderProps> = ({
   isDark,
   toggleDark,
   onOpenBenchmarks,
-  onOpenGuide,
   onOpenCommandPalette,
   onRunAnalysis,
   isAnalyzing,
@@ -128,14 +126,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
 
-            <button
-              onClick={onOpenGuide}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-sky-800 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/60 border border-sky-200/80 dark:border-sky-800/60 rounded-lg transition-colors whitespace-nowrap shrink-0"
-              title="Hackathon Demo & Rubric Guide"
-            >
-              <Trophy className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
-              <span className="hidden sm:inline">Judge Guide</span>
-            </button>
+
 
             <button
               onClick={onOpenBenchmarks}

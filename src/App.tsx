@@ -27,7 +27,6 @@ import { BlindSpotProbe } from './components/BlindSpotProbe';
 import { SourceInspectorModal } from './components/SourceInspectorModal';
 import { AddSourceModal } from './components/AddSourceModal';
 import { BenchmarkSelectorModal } from './components/BenchmarkSelectorModal';
-import { JudgeGuideModal } from './components/JudgeGuideModal';
 import { ExportModal } from './components/ExportModal';
 import { VoidGraphVisualizer } from './components/VoidGraphVisualizer';
 import { DecisionStressTester } from './components/DecisionStressTester';
@@ -88,7 +87,6 @@ export default function App() {
   const [showInspectorModal, setShowInspectorModal] = useState<boolean>(false);
   const [activeInspectorSourceId, setActiveInspectorSourceId] = useState<string | null>(null);
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
-  const [showJudgeGuideModal, setShowJudgeGuideModal] = useState<boolean>(false);
   const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false);
 
   // Run Dark Spot Audit
@@ -214,7 +212,6 @@ export default function App() {
         isDark={isDark}
         toggleDark={toggleDark}
         onOpenBenchmarks={() => setShowBenchmarksModal(true)}
-        onOpenGuide={() => setShowJudgeGuideModal(true)}
         onOpenCommandPalette={() => setShowCommandPalette(true)}
         onRunAnalysis={handleRunAnalysis}
         isAnalyzing={isAnalyzing}
@@ -383,7 +380,6 @@ export default function App() {
             <HeroBanner
               onSelectScenario={handleSelectScenario}
               currentScenarioId={currentScenario.id}
-              onOpenGuide={() => setShowJudgeGuideModal(true)}
               onRunAnalysis={handleRunAnalysis}
               isAnalyzing={isAnalyzing}
             />
@@ -548,15 +544,6 @@ export default function App() {
           topic={topic}
           decisionGoal={decisionGoal}
           onClose={() => setShowExportModal(false)}
-        />
-      )}
-
-      {showJudgeGuideModal && (
-        <JudgeGuideModal
-          onClose={() => setShowJudgeGuideModal(false)}
-          onNavigateTab={(t) => setActiveTab(t)}
-          onRunAnalysis={handleRunAnalysis}
-          onInspectSource={handleInspectSource}
         />
       )}
 
